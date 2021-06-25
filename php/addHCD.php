@@ -2,7 +2,8 @@
 require "../conn/conn.php";
 $arrayHDC=$_POST['hdc']; 
 $hdc="hdc";
-$motivos=json_decode($_POST['motivos']);
+$motivos=$_POST['motivos'];
+$arrayDeMotivos=['E','P','A','AIN','LA','AT','MATR','EST','NAC','LEA','LEF','EXAM','LACT','LF','HC','MATERN','RP','DONS','JT','LI','MO','SUSP','LEE6M','LEE1A','D538','CVPOSI','AISLCE','POSTCOVID','FALLECIMIENTOCOVID','TICE',];
 
 /* INSERTO UNA ENTRADA O FACTURA DE PRUDUSCTOS A INGRESAR */
 $sqlAddAgentesMunicipales="INSERT INTO `asistencias`(`efectivos`, `presentes`,
@@ -81,22 +82,20 @@ $add->bindParam(":falle",$arrayHDC[29]);
 $add->execute();
 
 $idLast=$conn->lastInsertId();
-foreach ($motivos as $key => $value) {
-  /*  print_r($value); */
-   if ($value==null) {
-     /* echo "entro"; */
-   }else{
-    foreach ($value as $k) {
-      /* echo $k->nombreApellido."<br>"; */
-      $sqlAddAgenteFalta="INSERT INTO `asisemple`(`idAsis`, `motivo`, `idEmple`) 
-                          VALUES (:id,:mo,:idEmple)";
+foreach ($motivos as $key=>$value) {
+
+/* 
+    echo json_encode(); */
+
+      $sqlAddAgenteFalta="INSERT INTO `asisemple`(`idAsis`, `motivo`, `empleados`) 
+                          VALUES (:id,:mo,:empleados)";
       $añadir=$conn->prepare($sqlAddAgenteFalta);
       $añadir->bindParam(":id",$idLast);
-      $añadir->bindParam(":mo",$key);
-      $añadir->bindParam(":idEmple",$k->idEmpleado);
+      $añadir->bindParam(":mo",$arrayDeMotivos[$key]);
+      $añadir->bindParam(":empleados",$value);
       $añadir->execute();
-    }
-   }
+    
+
   
 }
 
